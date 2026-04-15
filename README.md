@@ -32,11 +32,20 @@ A Command Line Interface (CLI) Python application that fetches and formats Cinci
     CFBD_API_KEY=your_actual_key_here
 
 ## Usage
+Run the script via the command line by passing the `--year` and `--week` arguments.
 
-Run the script via the command line by passing the --year and --week arguments:
-    python tracker.py --year 2024 --week 10
+### Example 1: Standard Completed Game
+```bash
+$ python tracker.py --year 2024 --week 5
+Year 2024, Week 5 Matchup: Bearcats @ Texas Tech | Final: 41-44
 
-## Testing
+### Example 2: Not Yet Completed Game
+$ python tracker.py --year 2024 --week 14
+Year 2024, Week 14 Matchup: Bearcats vs TCU | (Game not yet played)
+
+### Example 3: Bye Week Handling
+$ python tracker.py --year 2024 --week 14
+Year 2024, Week 14 Matchup: Bearcats vs TCU | (Game not yet played)
 
 To run the automated test suite locally, ensure your virtual environment is active and run:
     pytest
