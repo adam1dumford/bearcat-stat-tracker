@@ -1,12 +1,12 @@
 import os
+import argparse
 import requests
 from dotenv import load_dotenv
 
-# Load the API key from the hidden .env file
 load_dotenv()
 API_KEY = os.getenv("CFBD_API_KEY")
 
-def get_bearcat_games(year):
+def get_bearcat_game(year, week):
     url = "https://api.collegefootballdata.com/games"
     headers = {
         "Authorization": f"Bearer {API_KEY}",
@@ -14,38 +14,42 @@ def get_bearcat_games(year):
     }
     params = {
         "year": year,
+        "week": week,
         "team": "Cincinnati"
     }
 
     response = requests.get(url, headers=headers, params=params)
 
     if response.status_code == 200:
-        return response.json()
+        games = response.json()
+        if len(games) > 0:
+            game = games[0] 
+            
+            home = game.get('homeTeam', 'Unknown')
+            away = game.get('awayTeam', 'Unknown')
+            is_neutral = game.get('neutralSite', False)
+            
+            if home == "Cincinnati":
+                opponent = away
+                location = "vs"
+            else:
+                opponent = home
+                location = "@"
+                
+            if is_neutral:
+                location = "vs (Neutral Site)"
+                
+            print(f"Year {year}, Week {week} Matchup: Bearcats {location} {opponent}")
+        else:
+            print(f"No game found for the Bearcats in Year {year}, Week {week}. (Maybe a bye week?)")
     else:
         print(f"Error fetching data: Status Code {response.status_code}")
-        return None
 
 if __name__ == "__main__":
-    games_data = get_bearcat_games(2025)
+    parser = argparse.ArgumentParser(description="Track Cincinnati Bearcats Football Stats")
+    parser.add_argument("--year", type=int, required=True, help="The season year (e.g., 2024)")
+    parser.add_argument("--week", type=int, required=True, help="The week of the season (e.g., 1)")
     
-    if games_data and len(games_data) > 0:
-        first_game = games_data[0]
-        
-        # We now use the exact keys from your terminal output
-        home = first_game.get('homeTeam', 'Unknown')
-        away = first_game.get('awayTeam', 'Unknown')
-        is_neutral = first_game.get('neutralSite', False)
-
-        # Figure out who the opponent is and where the game is played
-        if home == "Cincinnati":
-            opponent = away
-            location = "vs"
-        else:
-            opponent = home
-            location = "@"
-            
-        # Override location if it's a neutral site
-        if is_neutral:
-            location = "vs (Neutral Site)"
-
-        print(f"Matchup: Bearcats {location} {opponent}")
+    args = parser.parse_args()
+    
+    get_bearcat_game(args.year, args.week)
