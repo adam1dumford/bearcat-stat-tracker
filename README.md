@@ -4,6 +4,7 @@ A Command Line Interface (CLI) Python application that fetches and formats Cinci
 
 ## Features
 * **Custom CLI:** Fetch matchup data for any specific year and week.
+* **Score Tracking:** Displays final scores for completed games and intelligently tags future/unplayed matchups.
 * **Smart Parsing:** Automatically formats output for home, away, and neutral-site games.
 * **Edge Case Handling:** Detects and gracefully handles bye weeks.
 * **Tested:** Includes a comprehensive `pytest` suite for core formatting logic.
